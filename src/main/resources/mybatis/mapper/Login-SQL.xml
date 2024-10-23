@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+	작성일 : 2024.10.21
+	작성자 : 김준식
+	내용 : 로그인 입니다.
+ -->
+<mapper namespace="com.Joonggodeal.joonggodeal.SignInUp.Dao">
+
+    <!--
+	작성일 : 2024.07.10
+	작성자 : 김준식
+	내용 : 사용자가 입력한 아이디 존재여부
+    -->
+    <select id="userIdCheck" parameterType="String" resultType="int">
+        SELECT COUNT(member_id)
+        FROM member
+        WHERE member_id = #{userId}
+                AND is_active = '1'
+    </select>
+
+    <!--
+	작성일 : 2024.07.10
+	작성자 : 김준식
+	내용 : 비밀번호 가져오기
+    -->
+    <select id="getUserPw" parameterType="HashMap" resultType="String">
+        SELECT member_password
+        FROM member
+        WHERE member_id = #{userId}
+            AND is_active = '1'
+    </select>
+
+    <!--
+	작성일 : 2024.07.28
+	작성자 : 김준식
+	내용 : 게스트 ID 저장
+    -->
+    <insert id="guestLogin" parameterType="hashmap" >
+        INSERT INTO member (member_id, is_active)
+        VALUES (#{guestId}, 'G')
+    </insert>
+
+</mapper>

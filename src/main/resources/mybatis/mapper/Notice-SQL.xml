@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+	작성일 : 2024.10.22
+	작성자 : 김준식
+	내용 : 게시판 내용 입니다.
+ -->
+<mapper namespace="com.Joonggodeal.joonggodeal.Notice.Dao.NoticeDao">
+    <!--
+	작성일 : 2024.10.22
+	작성자 : 김준식
+	내용 : 게시글 등록
+    -->
+    <insert id="noticeRegister" parameterType="hashMap" >
+
+    </insert>
+
+    <!--
+	작성일 : 2024.10.22
+	작성자 : 김준식
+	내용 : 게시글 수정
+    -->
+    <update id="noticeUpdate" parameterType="hashMap">
+        UPDATE joonggodeal.goods
+        SET goods_name = #{name}, goods_company = #{company}, description = #{description},
+            start_price = #{price}, category_idx = #{category_idx}, goods_title = #{title}, registe_date = now()
+        WHERE idx = #{idx};
+    </update>
+    <!--
+	작성일 : 2024.10.22
+	작성자 : 김준식
+	내용 : 게시글 삭제
+    -->
+    <delete id="noticeDelete" parameterType="HashMap">
+        DELETE FROM joonggodeal.goods
+        WHERE idx = #{idx};
+    </delete>
+    <!--
+	작성일 : 2024.10.22
+	작성자 : 김준식
+	내용 : 게시글 상세정보 불러오기
+    -->
+    <select id="getOneNotice" parameterType="HashMap">
+        SELECT g.idx as idx, g.goods_name as name, g.goods_company as company, g.start_price as start_price, g.description as description, g.registe_date as date, g.bid_price as bidprice,
+        FROM joonggodeal.goods as g
+             JOIN joonggodeal.category as c ON g.category_idx = c.idx
+        WHERE g.idx = #{idx};
+    </select>
+
+    <!--
+	작성일 : 2024.10.22
+	작성자 : 김준식
+	내용 : 게시글 모두 불러오기
+    -->
+    <select id="getAllNotice" parameterType="List">
+        SELECT idx, goods_title as title, goods_company as company, start_price, bid_price
+        FROM joonggodeal.goods
+        WHERE category_idx = #{idx}
+        ORDER BY idx DESC;
+    </select>
+
+</mapper>
