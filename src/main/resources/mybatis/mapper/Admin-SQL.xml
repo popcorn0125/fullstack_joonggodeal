@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+	작성일 : 2024.10.24
+	작성자 : 김준식
+	내용 : 관리자 화원가입 입니다.
+ -->
+<mapper namespace="com.Joonggodeal.joonggodeal.Admin.SignInUp.Dao.AdminDao">
+    <!--
+	작성일 : 2024.07.15
+	작성자 : 김준식
+	내용 : 아이디 중복 확인
+    -->
+    <select id="isDuplicateId" parameterType="HashMap" resultType="int">
+        SELECT COUNT(admin_id)
+        FROM joonggodeal.admin_info
+        WHERE admin_id = #{id}
+    </select>
+
+
+    <!--
+	작성일 : 2024.07.15
+	작성자 : 김준식
+	내용 : 아이디, 비밀번호, 이름, 닉네임, 성별 등 저장
+    -->
+    <insert id="memberRegister" parameterType="com.Joonggodeal.joonggodeal.Admin.SignInUp.DTO.AdminDTO" >
+        INSERT INTO joonggodeal.admin_info( admin_id, admin_name, admin_pw, admin_email)
+        VALUES (#{userid}, #{name}, #{pw}, #{email})
+    </insert>
+
+
+    <!--
+	작성일 : 2024.08.01
+	작성자 : 김준식
+	내용 : 회원탈퇴 (is_active를 "0"으로 변경).
+    -->
+    <update id="deleteAccount" parameterType="HashMap" >
+        UPDATE member
+        SET is_active = '0'
+        WHERE member_id = #{member_id}
+                AND member_name = #{member_name}
+                AND is_active = '1'
+    </update>
+
+    <!--
+	작성일 : 2024.08.05
+	작성자 : 권지용
+	내용 : 아이디 찾기
+    -->
+    <select id="findByID" parameterType="map" resultType="String" >
+        SELECT member_id
+        FROM member
+        WHERE member_name = #{userName}
+          AND member_phone_number = #{phonenumber}
+    </select>
+
+    <!--
+	작성일 : 2024.08.05
+	작성자 : 권지용
+	내용 : 비밀번호 찾기
+    -->
+    <select id="findByPW" resultType="int" >
+        SELECT COUNT(*)
+        FROM member
+        WHERE member_id = #{userID}
+          AND member_phone_number = #{phonenumber}
+    </select>
+
+    <update id="updatePassword" parameterType="map">
+        UPDATE member
+        SET member_password = #{newPassword}
+        WHERE member_id = #{userID}
+    </update>
+
+
+</mapper>
