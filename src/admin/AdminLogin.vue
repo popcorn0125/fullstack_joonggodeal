@@ -2,14 +2,14 @@
 <div class="form">
        <p class="form-title">관리자</p>
         <div class="input-container">
-          <input type="email" placeholder="Enter ID">
+          <input type="email" placeholder="Enter ID" v-model="user.id">
           <span>
           </span>
       </div>
       <div class="input-container">
-          <input type="password" placeholder="Enter Password">
+          <input type="password" placeholder="Enter Password" v-model="user.pw">
         </div>
-         <button type="submit" class="submit">
+         <button type="submit" class="submit" @click="login()">
         로그인
       </button>
 
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-
+import axios from 'axios';
 export default {
   name: "AdminLogin",
   components: {
@@ -33,12 +33,47 @@ export default {
 
   data() {
     return {
-      step: 1
-
+      step: 1,
+      user: {
+        id: '',
+        pw: ''
+      }
     }
   },
   methods: {
-    
+    login() {
+      const vm = this;
+      if(vm.user.id == '' || vm.user.id.trim() == null || vm.user.id.trim() == '') {
+        alert("아이디를 입력해주세요");
+        return ;
+      }
+      if(vm.user.pw == '' || vm.user.pw.trim() == null || vm.user.pw.trim() == '') {
+        alert("비밀번호를 입력해주세요");
+        return ;
+      }
+      console.log('로그인 버튼 누르기 전')
+      axios({
+        method : 'post',
+        header: { 'Content-Type': 'application/json; charset=UTF-8' },
+        url: "/adminlogin/verify",
+        data: vm.user,
+      })
+        .then((response) => {
+          if(response.data.result > 0) {
+            sessionStorage.setItem("USER_ID", response.data.USER_ID);
+            sessionStorage.setItem("JSESSIONID", response.data.JSESSIONID);
+            alert("로그인을 성공하였습니다.");
+            vm.$router.push({name: 'AdminUsers'});
+          } else {
+            alert(`'${response.data.message}'`);
+          }
+        })
+        .catch((error) =>  {
+          console.log('error', error);
+          alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+        })
+
+    }
   },
 
   created() {

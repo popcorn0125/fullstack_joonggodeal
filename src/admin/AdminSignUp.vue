@@ -2,19 +2,19 @@
   <div class="form">
        <p class="form-title">관리자 등록</p>
         <div class="input-container">
-            <input type="text" placeholder="아이디 입력">
+            <input type="text" placeholder="아이디 입력" v-model="user.id">
             <span></span>
         </div>
         <div class="input-container">
-            <input type="password" placeholder="비밀번호 입력">
+            <input type="password" placeholder="비밀번호 입력" v-model="user.pw">
         </div>
         <div class="input-container">
-            <input type="text" placeholder="이름 입력">
+            <input type="text" placeholder="이름 입력" v-model="user.name">
         </div>
         <div class="input-container">
-            <input type="email" placeholder="이메일 입력">
+            <input type="email" placeholder="이메일 입력" v-model="user.email">
         </div>
-        <button type="submit" class="submit">
+        <button type="submit" class="submit" @click="register()">
             등록
         </button>
 
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-
+import axios from 'axios';
 export default {
   name: "AdminSignUp",
   components: {
@@ -34,13 +34,55 @@ export default {
   },
   data() {
     return {
-      
+      user : {
+        id: '',
+        pw: '',
+        name: '',
+        email: ''
+      }
 
     }
   },
   methods: {
-    
+    // 관리자 등록
+    register() {
+      const vm = this;
+      if(vm.user.id == '' || vm.user.id == null){
+        alert('아이디를 입력해주세요');
+        return ;
+      }
+      if(vm.user.pw == '' || vm.user.pw == null){
+        alert('비밀번호를 입력해주세요');
+        return ;
+      }
+      if(vm.user.name == '' || vm.user.name == null){
+        alert('이름을 입력해주세요');
+        return ;
+      }
+      if(vm.user.email == '' || vm.user.email == null){
+        alert('이메일을 입력해주세요');
+        return ;
+      }
 
+      axios({
+        method : 'post',
+        header: { 'Content-Type': 'application/json; charset=UTF-8' },
+        url: "/adminpost/register",
+        data: vm.user,
+      })
+        .then((response) => {
+          if(response.data.result > 0) {
+            alert("관리자 등록에 성공하였습니다.");
+            vm.$router.push({name: 'AdminLogin'});
+          } else {
+            alert('회원 가입에 실패하였습니다. 정보를 다시 입력해주세요');
+          }
+        })
+        .catch((error) =>  {
+          console.log('error', error);
+          alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+        })
+    }
   },
 
   created() {
