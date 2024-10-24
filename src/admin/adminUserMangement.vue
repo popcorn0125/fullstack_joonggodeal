@@ -17,9 +17,9 @@
             <v-divider></v-divider>
 
             <v-list density="compact" nav>
-                <v-list-item prepend-icon="mdi-home-city" title="Home"  @click="this.$router.push({name:'AdminUsers'})"></v-list-item>
-                <v-list-item prepend-icon="mdi-account" title="상품 등록"  @click="this.$router.push({name:'ProductRegiste'})"></v-list-item>
-                <v-list-item prepend-icon="mdi-account-group-outline" title="공지사항 관리"  ></v-list-item>
+              <v-list-item prepend-icon="mdi-home-city" title="Home" @click="this.$router.push({ name:'AdminUsers' })"></v-list-item>
+              <v-list-item prepend-icon="mdi-account" title="상품 등록" @click="this.$router.push({ name:'ProductRegiste' })"></v-list-item>
+              <v-list-item prepend-icon="mdi-account-group-outline" title="공지사항 관리" @click="this.$router.push({name:'AdminNotice'})"></v-list-item>
             </v-list>
             <template v-slot:append>
                 <div class="pa-2">
@@ -63,8 +63,7 @@
                     </v-toolbar>
                     
                     </template>
-                    <template v-slot:item.actions="{ item }">
-                    <v-icon class="me-2" size="small" @click=""> mdi-pencil </v-icon>
+                    <template v-slot:item.delete="{ item }">
                     <v-icon size="small" @click=""> mdi-delete </v-icon>
                     </template>
                 </v-data-table>
@@ -98,7 +97,7 @@ export default {
         { title: '상점명', key: 'store' },
         { title: '가입일', key: 'createDate' },
         { title: '탈퇴여부', key: 'isDelete' },
-        { title: 'Actions', key: 'actions', sortable: false },
+        { title: '삭제', key: 'delete', sortable: false },
       ],
       desserts: [],
       editedIndex: -1,

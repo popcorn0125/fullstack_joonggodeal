@@ -1,44 +1,46 @@
 <template>
-<div class="form">
-       <p class="form-title">관리자</p>
+  <div class="form">
+       <p class="form-title">관리자 등록</p>
         <div class="input-container">
-          <input type="email" placeholder="Enter ID">
-          <span>
-          </span>
-      </div>
-      <div class="input-container">
-          <input type="password" placeholder="Enter Password">
+            <input type="text" placeholder="아이디 입력">
+            <span></span>
         </div>
-         <button type="submit" class="submit">
-        로그인
-      </button>
+        <div class="input-container">
+            <input type="password" placeholder="비밀번호 입력">
+        </div>
+        <div class="input-container">
+            <input type="text" placeholder="이름 입력">
+        </div>
+        <div class="input-container">
+            <input type="email" placeholder="이메일 입력">
+        </div>
+        <button type="submit" class="submit">
+            등록
+        </button>
 
-      <p class="signup-link">
-        No account?
-        <a href="/admin/signup">관리자 등록</a>
-      </p>
+        <p class="signup-link">
+            이미 등록하셨나요?
+            <a href="/admin/login">관리자 로그인</a>
+        </p>
     </div>
-    
 </template>
 
 <script>
 
 export default {
-  name: "AdminLogin",
+  name: "AdminSignUp",
   components: {
+    
   },
-  props: {
-    source: String
-  },
-
   data() {
     return {
-      step: 1
+      
 
     }
   },
   methods: {
     
+
   },
 
   created() {
