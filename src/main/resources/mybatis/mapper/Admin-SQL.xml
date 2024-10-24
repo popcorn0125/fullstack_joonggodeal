@@ -73,5 +73,14 @@
         WHERE member_id = #{userID}
     </update>
 
+    <select id="getUsers" resultType="hashmap" >
+        SELECT idx, member_id as id, member_name as name, member_nickname as nickname, isdelete, create_date
+        FROM joonggodeal.member;
+    </select>
+
+    <delete id="deleteUsers" parameterType="hashmap" >
+        DELETE FROM joonggodeal.member
+        WHERE idx = #{id}
+    </delete>
 
 </mapper>

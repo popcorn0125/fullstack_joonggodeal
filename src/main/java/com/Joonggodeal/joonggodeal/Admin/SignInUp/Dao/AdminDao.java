@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
 /*******************
  * 날짜 : 2024.07.15
@@ -47,4 +48,8 @@ public interface AdminDao {
     int findByPW(@Param("userID") String userID, @Param("phonenumber") String phonenumber);
 
     int updatePassword(@Param("userID") String userID, @Param("newPassword") String newPassword);
+
+    List<HashMap<String, Object>> getUsers();
+
+    int deleteUsers(HashMap<String, Object> params);
 }

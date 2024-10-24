@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 
 /*******************
  * 날짜 : 2024.07.15
@@ -111,5 +112,13 @@ public class AdminService {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public List<HashMap<String, Object>> getUsers() {
+        return adminDao.getUsers();
+    }
+
+    public int deleteUsers(HashMap<String, Object> params) {
+        return adminDao.deleteUsers(params);
     }
 }

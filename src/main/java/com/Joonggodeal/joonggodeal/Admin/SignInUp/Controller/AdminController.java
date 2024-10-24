@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*******************
@@ -124,5 +125,22 @@ public class AdminController {
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update password.");
         }
+    }
+
+    /*******************
+     * 날짜 : 2024.10.25
+     * 이름 : 김준식
+     * 내용 : 모든 회원 정보 불러오기
+     * *****************/
+    @PostMapping("/getusers")
+    public ResponseEntity<List<HashMap<String, Object>>> getUsers() {
+        System.out.println("AdminController 실행 - getUsers");
+        return ResponseEntity.ok(adminService.getUsers());
+    }
+
+    @PostMapping("/deleteuser")
+    public ResponseEntity<Integer> deleteUser(@RequestBody HashMap<String, Object> params) {
+        System.out.println("AdminController 실행 - deleteUsers");
+        return ResponseEntity.ok(adminService.deleteUsers(params));
     }
 }

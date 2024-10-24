@@ -6,15 +6,20 @@
 	작성자 : 김준식
 	내용 : 상품 관련 내용 입니다.
  -->
-<mapper namespace="com.Joonggodeal.joonggodeal.Product.DAO.ProductDao">
+<mapper namespace="com.Joonggodeal.joonggodeal.Admin.Product.DAO.AdminProductDao">
     <!--
 	작성일 : 2024.10.21
 	작성자 : 김준식
 	내용 : 상품 등록
     -->
-    <insert id="goodsRegister" parameterType="hashMap" >
-        INSERT INTO joonggodeal.goods (goods_name, goods_company, start_price, description, category_idx, goods_title)
-        VALUES (#{name}, #{company}, #{price}, #{description}, #{category_idx}, #{title});
+    <insert id="goodsRegister" parameterType="com.Joonggodeal.joonggodeal.Admin.Product.DTO.productDto" >
+        INSERT INTO joonggodeal.goods (goods_name, goods_company, start_price, description, category_idx, goods_title, file_name, buy_member)
+        VALUES (#{name}, #{manufacturer}, #{price}, #{description},
+                (
+                    select idx
+                    from joonggodeal.category
+                    where category_name = #{category}
+                    ), #{title}, #{filename}, null);
     </insert>
 
     <!--
@@ -54,11 +59,20 @@
 	작성자 : 김준식
 	내용 : 해당 카테고리의 상품을 모두 불러오기
     -->
-    <select id="getAllGoods" parameterType="List">
-        SELECT idx, goods_title as title, goods_company as company, start_price, bid_price
-        FROM joonggodeal.goods
-        WHERE category_idx = #{idx}
-        ORDER BY idx DESC;
+    <select id="getAllGoods" parameterType="HashMap" resultType="HashMap">
+            select g.idx as idx,g.goods_name as name, g.goods_title as title, g.start_price as start_price, g.bid_price as bid_price, g.goods_company as company,
+                ca.category_name as category_name, m.member_id as id
+            from joonggodeal.goods as g
+                join joonggodeal.member as m on g.buy_member = m.idx
+                join joonggodeal.category as ca on g.category_idx = ca.idx
+                join joonggodeal.admin_info as a on g.admin_idx = a.idx
+            where a.admin_id = #{id}
+            order by g.idx DESC;
+    </select>
+
+    <select id="getCategory" resultType="String">
+        SELECT category_name
+        FROM joonggodeal.category
     </select>
 
 </mapper>

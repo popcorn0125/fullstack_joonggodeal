@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+	작성일 : 2024.10.21
+	작성자 : 김준식
+	내용 : 상품 관련 내용 입니다.
+ -->
+<mapper namespace="com.Joonggodeal.joonggodeal.Admin.Notice.DAO.AdminNoticeDao">
+
+    <insert id="register" parameterType="HashMap" >
+        INSERT INTO joonggodeal.board (title, writer, contents, admin_idx )
+        VALUES (#{title}, #{author}, #{content},
+                (
+                    select idx
+                    from joonggodeal.admin_info
+                    where admin_id = #{id}
+                    );
+    </insert>
+
+
+    <update id="goodsUpdate" parameterType="hashMap">
+        UPDATE joonggodeal.goods
+        SET goods_name = #{name}, goods_company = #{company}, description = #{description},
+            start_price = #{price}, category_idx = #{category_idx}, goods_title = #{title}, registe_date = now()
+        WHERE idx = #{idx};
+    </update>
+
+    <delete id="noticeDelete" parameterType="HashMap">
+        DELETE FROM joonggodeal.goods
+        WHERE idx = #{idx};
+    </delete>
+
+    <select id="getOneNotice" parameterType="HashMap" resultType="HashMap">
+        SELECT idx, title, writer, contents
+        FROM joonggodeal.board
+        WHERE idx = #{idx};
+    </select>
+
+
+    <select id="getNoticeAll" parameterType="HashMap" resultType="HashMap">
+            select b.idx as idx, b.title as title, b.writer as author, b.contents as content, TO_CHAR(b.create_date, 'YYYY-MM-DD HH:MM:SS') as create_date
+            from joonggodeal.board as b
+                join joonggodeal.admin_info as a on b.admin_idx = a.idx
+            where a.admin_id = #{id}
+            order by g.idx DESC;
+    </select>
+
+</mapper>
