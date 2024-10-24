@@ -6,8 +6,8 @@
           <v-list-item
             lines="three"
             prepend-avatar="https://randomuser.me/api/portraits/women/81.jpg"
-            subtitle="Logged in"
-            title="Jane Smith"
+            subtitle="환영합니다"
+            :title="`${name}님`"
           ></v-list-item>
         </template>
 
@@ -81,6 +81,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 
 export default {
   name: "AdminNoticeRegister",
@@ -89,6 +90,7 @@ export default {
   },
   data() {
     return {
+      name: sessionStorage.getItem('USER_ID'),
       valid: false,
       notice: {
         author: '관리자',
@@ -103,10 +105,34 @@ export default {
   },
   methods: {
     submitNotice() {
-      if (this.$refs.form.validate()) {
+      const vm = this;
+      if (vm.$refs.form.validate()) {
         // 등록 로직 처리
-        console.log('Notice Registered:', this.notice);
-        this.$router.push({ name: 'NoticeList' }); // 목록 페이지로 이동
+        const postData = {
+          author: vm.notice.author,
+          title: vm.notice.title,
+          content: vm.notice.content,
+          id: vm.name
+        }
+        axios({
+          method : 'post',
+          header: { 'Content-Type': 'application/json; charset=UTF-8' },
+          url: "/adminnotice/register",
+          data: postData
+        })
+          .then((response) => {
+            if(response.data ) {
+              alert('공지글을 정상적으로 등록하였습니다.')
+              this.$router.push({ name: 'NoticeList' }); // 목록 페이지로 이동
+            } else {
+              alert("데이터가 존재하지 않습니다.");
+            }
+          })
+          .catch((error) =>  {
+            console.log('error', error);
+            alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+          })
+        
       }
     },
     cancel() {

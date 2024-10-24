@@ -9,8 +9,8 @@
                 <v-list-item
                 lines="three"
                 prepend-avatar="https://randomuser.me/api/portraits/women/81.jpg"
-                subtitle="Logged in"
-                title="Jane Smith"
+                subtitle="환영합니다"
+                :title="`${name}님`"
                 ></v-list-item>
             </template>
 
@@ -45,26 +45,36 @@
                     <v-toolbar flat style="background-color: #1867c0; color:white">
                         <v-toolbar-title>회원 관리</v-toolbar-title>
 
-                        <v-dialog v-model="dialogDelete" max-width="500px">
+                      
                         // 삭제 경고 alert 창
+                        <!-- 삭제 확인 다이얼로그 -->
+                        <v-dialog v-model="dialogDelete" max-width="500px">
+                          <v-card>
+                            <v-card-title class="headline">회원 삭제</v-card-title>
+                            <v-card-text>정말로 이 회원을 삭제하시겠습니까?</v-card-text>
+                            <v-card-actions>
+                              <v-btn color="primary" text @click="dialogDelete = false">취소</v-btn>
+                              <v-btn color="red" text @click="deleteItem">삭제</v-btn>
+                            </v-card-actions>
+                          </v-card>
                         </v-dialog>
                         <v-text-field
-        v-model="search"
-        density="compact"
-        label="Search"
-        prepend-inner-icon="mdi-magnify"
-        variant="solo-filled"
-        flat
-        hide-details
-        single-line
-        style="margin-right: 20px;"
-      ></v-text-field>
+                          v-model="search"
+                          density="compact"
+                          label="Search"
+                          prepend-inner-icon="mdi-magnify"
+                          variant="solo-filled"
+                          flat
+                          hide-details
+                          single-line
+                          style="margin-right: 20px;"
+                        ></v-text-field>
                     
                     </v-toolbar>
                     
                     </template>
                     <template v-slot:item.delete="{ item }">
-                    <v-icon size="small" @click=""> mdi-delete </v-icon>
+                    <v-icon size="small"  @click="confirmDelete(item)"> mdi-delete </v-icon>
                     </template>
                 </v-data-table>
             </v-card>
@@ -74,29 +84,29 @@
 </template>
 
 <script>
-
+import axios from 'axios';
 export default {
   name: "Admin",
   components: {
   },
   data() {
     return {
-      length: 3,
-      onboarding: 0,
-      dialog: false,
       dialogDelete: false,
+      deleteItemData: null,
+      name: '',
+      dialog: false,
       headers: [
         {
-          title: '이메일',
+          title: '닉네임',
           align: 'start',
           sortable: false,
-          key: 'email',
+          key: 'nickname',
         },
         { title: '이름', key: 'name' },
         { title: '아이디', key: 'id' },
-        { title: '상점명', key: 'store' },
-        { title: '가입일', key: 'createDate' },
-        { title: '탈퇴여부', key: 'isDelete' },
+        // { title: '상점명', key: 'store' },
+        { title: '가입일', key: 'create_date' },
+        { title: '탈퇴여부', key: 'isdelete' },
         { title: '삭제', key: 'delete', sortable: false },
       ],
       desserts: [],
@@ -119,58 +129,59 @@ export default {
     }
   },
   methods: {
+     // 삭제 확인 다이얼로그 열기
+     confirmDelete(item) {
+      this.dialogDelete = true;
+      this.deleteItemData = item; // 삭제할 항목을 저장
+    },
+
+    // 회원 삭제 요청
+    deleteItem() {
+      axios.post(`/adminpost/deleteuser`, { id: this.deleteItemData.idx })
+        .then(response => {
+          if (response.data) {
+            this.desserts = this.desserts.filter(item => item.id !== this.deleteItemData.id);
+            this.dialogDelete = false; // 다이얼로그 닫기
+          } else {
+            alert("삭제 실패");
+          }
+        })
+        .catch(error => {
+          console.error("삭제 요청 오류:", error);
+        });
+    },
+
+    // 초기값
     initialize() {
-        this.desserts = [
-          {
-            email: 'a12a25@gmail.com',
-            name: '홍길동',
-            id: 'hong123',
-            store: 'hello',
-            createDate: '2024-10-18',
-            isDelete: 'N',
-          },
-          {
-            email: 'a12a25@gmail.com',
-            name: '홍길동',
-            id: 'hong123',
-            store: 'hello',
-            createDate: '2024-10-18',
-            isDelete: 'N',
-          },
-          {
-            email: 'a12a25@gmail.com',
-            name: '홍길동',
-            id: 'hong123',
-            store: 'hello',
-            createDate: '2024-10-18',
-            isDelete: 'N',
-          },
-          {
-            email: 'a12a25@gmail.com',
-            name: '홍길동',
-            id: 'hong123',
-            store: 'hello',
-            createDate: '2024-10-18',
-            isDelete: 'N',
-          },
-          {
-            email: 'a12a25@gmail.com',
-            name: '홍길동',
-            id: 'hong123',
-            store: 'hello',
-            createDate: '2024-10-18',
-            isDelete: 'N',
-          },
-        ]
+      const vm = this;
+      axios({
+        method : 'post',
+        header: { 'Content-Type': 'application/json; charset=UTF-8' },
+        url: "/adminpost/getusers",
+      })
+        .then((response) => {
+          if(response.data) {
+            vm.desserts = response.data;
+            
+          } else {
+            alert("데이터가 존재하지 않습니다.");
+          }
+        })
+        .catch((error) =>  {
+          console.log('error', error);
+          alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+        })
+        
       },
 
   },
 
   created() {
-    this.initialize()
+    
   },
   mounted() {
-    
+    this.name = sessionStorage.getItem('USER_ID');
+    this.initialize();
   },
 }
 </script>

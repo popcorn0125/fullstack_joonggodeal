@@ -6,8 +6,8 @@
           <v-list-item
             lines="three"
             prepend-avatar="https://randomuser.me/api/portraits/women/81.jpg"
-            subtitle="Logged in"
-            title="Jane Smith"
+            subtitle="환영합니다"
+            :title="`${name}님`"
           ></v-list-item>
         </template>
 
@@ -38,7 +38,7 @@
             <!-- 상품 등록 버튼 -->
             <v-row class="mb-4">
               <v-col cols="12" class="text-right">
-                <v-btn color="primary" variant="outlined" @click="this.$router.push({ name: 'ProductRegistePage' })">
+                <v-btn color="primary" variant="outlined" @click="this.$router.push({ name: 'AdminNoticeRegister' })">
                   공지 작성
                 </v-btn>
               </v-col>
@@ -47,7 +47,7 @@
             <v-col v-for="(notice, index) in notices" :key="index" cols="12" md="6">
               <v-card class="pa-3">
                 <v-card-title>{{ notice.title }}</v-card-title>
-                <v-card-subtitle>작성자: {{ notice.author }} | 등록일: {{ notice.date }}</v-card-subtitle>
+                <v-card-subtitle>작성자: {{ notice.author }} | 등록일: {{ notice.create_date }}</v-card-subtitle>
                 <v-card-text>{{ notice.content }}</v-card-text>
                 <v-card-actions>
                   <v-btn color="primary" @click="editNotice(notice)">수정</v-btn>
@@ -71,6 +71,7 @@ export default {
   },
   data() {
     return {
+      name: sessionStorage.getItem('USER_ID'),
       notices: [
         {
           title: '공지사항 1',
@@ -90,12 +91,33 @@ export default {
   },
   methods: {
     editNotice(notice) {
-      this.$router.push({ name: 'AdminNoticeUpdate', query: { id: 1 } });
+      this.$router.push({ name: 'AdminNoticeUpdate', query: { id: notice } });
     },
     deleteNotice(notice) {
       // 삭제 로직 추가
       console.log('Deleted:', notice);
     },
+
+    initialize() {
+      const vm = this;
+      axios({
+          method : 'post',
+          header: { 'Content-Type': 'application/json; charset=UTF-8' },
+          url: "/adminnotice/getnoticelist",
+          data: {id: sessionStorage.getItem('USER_ID')}
+        })
+          .then((response) => {
+            if(response.data ) {
+              vm.notices = response.data;
+            } else {
+              alert("데이터가 존재하지 않습니다.");
+            }
+          })
+          .catch((error) =>  {
+            console.log('error', error);
+            alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+          })
+    }
 
   },
 
@@ -103,7 +125,7 @@ export default {
 
   },
   mounted() {
-    
+    this.initialize();
   },
 }
 </script>

@@ -19,6 +19,14 @@ module.exports = defineConfig({
         target: 'http://localhost:8080',
         changeOrigin: true
       },
+      '/adminproduct': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      },
+      '/adminnotice': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      },
       
     }
   }

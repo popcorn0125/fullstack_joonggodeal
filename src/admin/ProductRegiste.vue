@@ -9,8 +9,8 @@
                 <v-list-item
                 lines="three"
                 prepend-avatar="https://randomuser.me/api/portraits/women/81.jpg"
-                subtitle="Logged in"
-                title="Jane Smith"
+                subtitle="환영합니다"
+                :title="`${name}님`"
                 ></v-list-item>
             </template>
 
@@ -58,15 +58,26 @@
                 md="6"
               >
                 <v-card class="pa-3">
-                  <v-card-title>{{ product.name }}</v-card-title>
+                  <v-card-title>{{ product.title }}</v-card-title>
+                  <v-card-subtitle>
+                    {{ product.name }}
+                  </v-card-subtitle>
 
                   <v-card-subtitle>
                     {{ product.category }}
                   </v-card-subtitle>
-
-                  <v-card-text>
-                    {{ product.description }}
-                  </v-card-text>
+                  <v-card-subtitle>
+                    제조사 : {{ product.company }}
+                  </v-card-subtitle>
+                  <v-card-subtitle>
+                    시작가 : {{ product.start_price }} 원
+                  </v-card-subtitle>
+                  <v-card-subtitle>
+                    경매기 : {{ product.bid_price }} 원
+                  </v-card-subtitle>
+                  <v-card-subtitle>
+                    구매자 : {{ product.id }} 님
+                  </v-card-subtitle>
 
                   <v-card-actions>
                     <v-btn color="primary" @click="this.$router.push({name: 'AdminProductUpdate', query: {id:1}})">수정</v-btn>
@@ -82,7 +93,7 @@
 </template>
 
 <script>
-
+import axios from 'axios';
 export default {
   name: "ProductRegiste",
   components: {
@@ -90,29 +101,33 @@ export default {
   },
   data() {
     return {
-      products: [
-        {
-          name: '상품 1',
-          category: '카테고리 1',
-          description: '상품 1에 대한 가격',
-        },
-        {
-          name: '상품 2',
-          category: '카테고리 2',
-          description: '상품 2에 대한 가격',
-        },
-        {
-          name: '상품 2',
-          category: '카테고리 2',
-          description: '상품 2에 대한 가격',
-        },
-        // 더 많은 상품 추가 가능
-      ],
+      name: sessionStorage.getItem('USER_ID'),
+      products: [],
 
     }
   },
   methods: {
-    
+    initialize() {
+      const vm = this;
+      axios({
+          method : 'post',
+          header: { 'Content-Type': 'application/json; charset=UTF-8' },
+          url: "/adminproduct/getproductlist",
+          data: {id:sessionStorage.getItem('USER_ID')}
+        })
+          .then((response) => {
+            if(response.data ) {
+              vm.products = response.data;
+              
+            } else {
+              alert("데이터가 존재하지 않습니다.");
+            }
+          })
+          .catch((error) =>  {
+            console.log('error', error);
+            alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+          })
+    }
 
   },
 
@@ -120,7 +135,7 @@ export default {
 
   },
   mounted() {
-    
+    this.initialize();
   },
 }
 </script>
