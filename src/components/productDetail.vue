@@ -1,7 +1,7 @@
 <template>
   <v-card color="basil">
     <v-card-title class="text-center justify-center py-6">
-        <h1 class="font-weight-bold text-h2 text-basil">중고나라</h1>
+        <h1 class="font-weight-bold text-h2 text-basil">중고딜</h1>
     </v-card-title>
 
     <v-tabs v-model="tab" bg-color="transparent" color="basil" grow>
@@ -20,21 +20,29 @@
   >
     <v-img
       height="250"
-      src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+      :src="`http://localhost:8080/images/${product.filename}`"
       cover
     ></v-img>
 
     <v-card-item>
-      <v-card-title>제목</v-card-title>
-
+      <v-card-title>{{ product.title }}</v-card-title>
       <v-card-subtitle>
-        <span class="me-1">등록일 : </span>
+        <span class="me-1">이름 : {{ product.name }}</span>
       </v-card-subtitle>
       <v-card-subtitle>
-        <span class="me-1">카테고리 : </span>
+        <span class="me-1">제조사 : {{ product.company }}</span>
       </v-card-subtitle>
       <v-card-subtitle>
-        <span class="me-1">가격 : </span>
+        <span class="me-1">등록일 : {{ product.create_date }}</span>
+      </v-card-subtitle>
+      <v-card-subtitle>
+        <span class="me-1">카테고리 : {{ product.category_name }}</span>
+      </v-card-subtitle>
+      <v-card-subtitle>
+        <span class="me-1">시작가격 : {{ product.startprice }}</span>
+      </v-card-subtitle>
+      <v-card-subtitle>
+        <span class="me-1">현재 경매 가격 : {{ product.currentprice == 0 ? "아직 제시 가격 없음": product.currentprice }}</span>
       </v-card-subtitle>
     </v-card-item>
 
@@ -43,7 +51,7 @@
     <div class="px-4 mb-2">
       <h5>Split</h5>
 
-      <v-number-input control-variant="split" :step="5"></v-number-input>
+      <v-number-input control-variant="split" :step="5" v-model="submitPrice"></v-number-input>
     </div>
 
     <v-card-actions>
@@ -52,7 +60,7 @@
         text="제출하기"
         block
         border
-        @click="reserve"
+        @click="submitPriceBtn()"
       ></v-btn>
     </v-card-actions>
 
@@ -60,14 +68,14 @@
     <v-card-title>제품 설명</v-card-title>
     <v-card-text>
       <div>
-        Small plates, salads & sandwiches - an intimate setting with 12 indoor
-        seats plus patio seating.
+        {{ product.description }}
       </div>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
+import axios from 'axios';
 import { VNumberInput } from 'vuetify/labs/VNumberInput'
 export default {
   name: "ProductDetail",
@@ -76,12 +84,63 @@ export default {
   },
   data() {
     return {
+      submitPrice: 0,
         idx : 0,
-        items: ['카테고리']
+        items: ['카테고리'],
+        product: {}
     }
   },
   methods: {
-    
+    submitPriceBtn() {
+      const vm = this;
+      if (vm.submitPrice < vm.product.startprice || vm.submitPrice < vm.product.currentprice) {
+        alert('제시한 가격이 시작가 또는 현재가 보다 낮게 작성하셨습니다. 다시 제시해주세요.');
+        return
+      }
+
+      const postData = {
+        goods_idx: parseInt(vm.idx),
+        bid_price: vm.submitPrice,
+        id: sessionStorage.getItem('USER_ID')
+      }
+      axios({
+          method : 'post',
+          header: { 'Content-Type': 'application/json; charset=UTF-8' },
+          url: "/productcategory/submitprice",
+          data: postData
+      })
+      .then((response) => {
+        console.log(response.data)
+          if(response.data > 0) {
+              alert('제시한 가격을 전달하였습니다.');
+              history.go(0);
+
+          }
+      })
+      .catch(function(){
+          alert("에러가 발생하였습니다.")
+      });
+
+    },
+    setting() {
+      const vm = this;
+      console.log(vm.idx)
+      axios({
+          method : 'post',
+          header: { 'Content-Type': 'application/json; charset=UTF-8' },
+          url: "/productcategory/getonegoods",
+          data: {idx: parseInt(vm.idx)}
+      })
+      .then((response) => {
+        console.log(response.data)
+          if(response.data != null) {
+              vm.product = response.data;
+          }
+      })
+      .catch(function(){
+          alert("에러가 발생하였습니다.")
+      });
+    },
 
   },
 
@@ -89,7 +148,8 @@ export default {
 
   },
   mounted() {
-    this.idx = this.$route.id
+    this.idx = this.$route.query.id
+    this.setting();
   },
 }
 </script>

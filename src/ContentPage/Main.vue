@@ -1,7 +1,7 @@
 <template>
   <v-card color="basil">
     <v-card-title class="text-center justify-center py-6">
-      <h1 class="font-weight-bold text-h2 text-basil">중고나라</h1>
+      <h1 class="font-weight-bold text-h2 text-basil">중고딜</h1>
     </v-card-title>
 
     <v-tabs v-model="tab" bg-color="transparent" color="basil" grow>
@@ -43,7 +43,10 @@ export default {
 
   },
   mounted() {
-    
+    if(sessionStorage.getItem('USER_ID') == null && sessionStorage.getItem('JSESSIONID') == null) {
+      this.$router.push({name:'LoginPage'});
+      return
+    }
   },
   computed: {
     currentTabComponent() {

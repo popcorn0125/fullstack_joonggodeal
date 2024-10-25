@@ -61,7 +61,7 @@ export default {
     closeModal() {
       this.isErrorModal = false;
       if(this.isLoginSuccess == 1) {
-        this.$router.push({ name: 'CategoryChoice' });
+        this.$router.push({ name: 'Main' });
       }
     },
     // 아이디 입력을 감지 했을 경우
@@ -165,7 +165,7 @@ export default {
   },
   mounted() {
     if( (sessionStorage.getItem('JSESSIONID') != null && sessionStorage.getItem('USER_ID') != null)){
-      this.$router.push({ name: 'CategoryChoice' });
+      this.$router.push({ name: 'Main' });
     }
   },
 }

@@ -23,7 +23,7 @@
             </v-list>
             <template v-slot:append>
                 <div class="pa-2">
-                    <v-btn color="primary" block>
+                    <v-btn color="primary" block @click="logout()">
                         Logout
                     </v-btn>
                 </div>
@@ -80,8 +80,8 @@
                   </v-card-subtitle>
 
                   <v-card-actions>
-                    <v-btn color="primary" @click="this.$router.push({name: 'AdminProductUpdate', query: {id:1}})">수정</v-btn>
-                    <v-btn color="error">삭제</v-btn>
+                    <v-btn color="primary" @click="this.$router.push({name: 'AdminProductUpdate', query: {id:product.idx}})">수정</v-btn>
+                    <v-btn color="error" @click="deleteProduct(product.idx)">삭제</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-col>
@@ -107,6 +107,47 @@ export default {
     }
   },
   methods: {
+    // 로그아웃
+    logout() {
+      const vm = this;
+      axios({
+        method : 'post',
+        header: { 'Content-Type': 'application/json; charset=UTF-8' },
+        url: "/adminlogin/logout",
+      })
+        .then((response) => {
+          if(response.data) {
+            sessionStorage.removeItem('USER_ID');
+            sessionStorage.removeItem('JSESSIONID');
+            vm.$router.push({name:"AdminLogin"});
+          } else {
+            alert("데이터가 존재하지 않습니다.");
+          }
+        })
+        .catch((error) =>  {
+          console.log('error', error);
+          alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+        })
+    },
+    deleteProduct(idx) {
+      const vm = this;
+      
+      axios({
+          method : 'post',
+          header: { 'Content-Type': 'application/json; charset=UTF-8' },
+          url: "/adminproduct/delete",
+          data: {idx:idx}
+        })
+          .then((response) => {
+            if(response.data >0 ) {
+              history.go(0); 
+            }
+          })
+          .catch((error) =>  {
+            console.log('error', error);
+            alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+          })
+    },
     initialize() {
       const vm = this;
       axios({
@@ -135,6 +176,10 @@ export default {
 
   },
   mounted() {
+    if(sessionStorage.getItem('USER_ID') == null && sessionStorage.getItem('JSESSIONID') == null) {
+      this.$router.push({name:'AdminLogin'});
+      return
+    }
     this.initialize();
   },
 }

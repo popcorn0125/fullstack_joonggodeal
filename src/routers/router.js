@@ -54,7 +54,7 @@ const routes = [
     },
     
       {
-        path: '/category/:key',
+        path: '/category',
         name: 'categoryDetail',
         component: categoryDetail
       },

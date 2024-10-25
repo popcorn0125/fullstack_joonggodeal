@@ -34,34 +34,6 @@
         </div>
         <text id="nickname" class="infoMessage">{{ nickNameMsg }}</text>
       </div>
-      <div class="include-msg">
-        <div class="gender-selection">
-          <div class="gender-option">
-            <input @input="genderChange()" type="radio" id="male" name="gender" v-model="gender" value="M">
-            <label for="male">남</label>
-          </div>
-          <div class="gender-option">
-            <input @input="genderChange()" type="radio" id="female" name="gender" v-model="gender" value="F">
-            <label for="female">여</label>
-          </div>
-        </div>
-        <text id="gender" class="infoMessage">{{ genderMsg }}</text>
-      </div>
-      <div class="include-msg">
-        <div class="input-group btn_posi">
-          <input @input="phoneNumChange()" v-model="phonenumber" placeholder="전화번호"  type="text" />
-          <button type="button" @click="sendSMS()">인증번호 전송</button>
-        </div>
-        <text id="phone" class="infoMessage">{{ phoneMsg }}</text>
-      </div>
-
-      <div class="include-msg" v-show="showVerificationCode">
-        <div class="input-group btn_posi">
-          <input @input="checknumberChange()" v-model="checknumber" placeholder="인증번호"   type="text" maxlength="6"  />
-          <button type="button" @click="numberCheck()">확인</button>
-        </div>
-        <text id="checknumber" class="infoMessage">{{pnCheckMsg}}</text>
-      </div>
 
       <button type="button" @click="signUp()">Sign up</button>
       <div class="bottom-text">
@@ -382,24 +354,6 @@ export default {
         vm.nickNameMsg = '닉네임 중복확인을 진행해주세요.';
         result = false;
       }
-      if(vm.gender == '') {
-        document.getElementById('gender').style.color = '#F00';
-        vm.genderMsg = '성별을 선택해주세요.';
-        result = false;
-      }
-      if(vm.phonenumber == '') {
-        document.getElementById('phone').style.color = '#F00';
-        vm.phoneMsg = '전화번호를 입력해주세요.';
-        result = false;
-      } else if(vm.showVerificationCode === false && vm.isPhoneNumCheck === false) {
-        document.getElementById('phone').style.color = '#F00';
-        vm.phoneMsg = '인증번호를 발급받고 인증을 진행해주세요.';
-      }
-      if(vm.checknumber == '') {
-        document.getElementById('checknumber').style.color = '#F00';
-        vm.pnCheckMsg = '인증번호를 입력하고 확인을 진행 해주세요.';
-        result = false;
-      }
 
       if(result === false) return result;
       return true;
@@ -442,25 +396,13 @@ export default {
         return ;
       }
 
-      if(vm.validatePhoneNumber(vm.phonenumber) === false) {
-        document.getElementById('phone').style.color = '#F00';
-        vm.phoneMsg = '전화번호를 입력해주세요.';
-        return;
-      }
       
-      if(vm.isPhoneNumCheck === false) {
-        document.getElementById('checknumber').style.color = '#F00';
-        vm.pnCheckMsg = '인증번호를 입력하고 확인을 진행 해주세요.';
-        return ;
-      }
 
       const data = {
         userid : vm.id.toLowerCase(),
         pw : vm.pw,
         name : vm.name,
-        phonenumber : vm.phonenumber,
         nickname : vm.nickname,
-        gender : vm.gender
       };
 
       axios({
@@ -471,6 +413,7 @@ export default {
       })
         .then(function(response) {
           if(response.data.result) {
+            alert("회원을 등록하였습니다.");
             vm.$router.push({path : "/login"});
           } else {
             vm.modalTitle = "회원가입 실패";

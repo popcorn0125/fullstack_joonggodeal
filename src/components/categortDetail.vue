@@ -1,7 +1,7 @@
 <template>
 <v-card color="basil">
     <v-card-title class="text-center justify-center py-6">
-        <h1 class="font-weight-bold text-h2 text-basil">중고나라</h1>
+        <h1 class="font-weight-bold text-h2 text-basil">중고딜</h1>
     </v-card-title>
 
     <v-tabs v-model="tab" bg-color="transparent" color="basil" grow>
@@ -49,52 +49,52 @@
             <v-col v-for="(item, i) in items" :key="i" cols="12" sm="4" xl="3">
                 <v-sheet border>
                     <v-img
-                    :gradient="`to top right, rgba(255, 255, 255, .1), rgba(${item.raw.color}, .15)`"
-                    :src="item.raw.src"
+                    
+                    :src="`http://localhost:8080/images/${item.raw.src}`"
                     height="150"
                     cover
                     ></v-img>
 
                     <v-list-item
-                    :title="item.raw.name"
+                    :title="item.raw.title"
                     density="comfortable"
                     lines="two"
-                    subtitle="Lorem ipsum dil orei namdie dkaf"
+                    :subtitle="item.raw.name"
                     >
                         <template v-slot:title>
-                            <strong class="text-h6"> {{ item.raw.name }} </strong>
+                            <strong class="text-h6"> {{ item.raw.title }} </strong>
                         </template>
                     </v-list-item>
 
                     <v-table class="text-caption" density="compact">
                         <tbody>
                             <tr align="right">
-                            <th>상태:</th>
+                            <th>제목 :</th>
 
-                            <td>{{ item.raw.status }}</td>
+                            <td>{{ item.raw.title }}</td>
                             </tr>
 
                             <tr align="right">
                             <th>시작가:</th>
 
-                            <td>{{ item.raw.startPrice }}</td>
+                            <td>{{ item.raw.startprice }}</td>
                             </tr>
 
                             <tr align="right">
-                            <th>현재가:</th>
+                            <th>현재가: </th>
 
-                            <td>{{ item.raw.currentPrice }}</td>
+                            <td>{{ item.raw.currentprice == 0? "아직 제시된 가격이 없음" : item.raw.currentprice }}</td>
                             </tr>
 
                             <tr align="right">
                             <th>경매 진행 여부:</th>
 
-                            <td>{{ item.raw.wireless ? '진행중' : '종료' }}</td>
+                            <td>{{ item.raw.sell == 'N' ? '진행중' : '종료' }}</td>
                             </tr>
 
-                            <tr align="left" v-if="item.raw.wireless">
+                            <tr align="left" v-if="item.raw.sell=='N'?true:false">
                             <v-btn
-                                @click="detailProduct(1)"
+                                @click="detailProduct(item.raw.idx)"
                                 style="margin: 10px"
                                 class="text-none"
                                 size="small"
@@ -125,6 +125,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'categoryDetail',
     data() {
@@ -135,175 +137,12 @@ export default {
         title_key: '',
         itemsPerPage: 12,
         mice: [
-        {
-            name: 'Logitech G Pro X',
-            color: '14, 151, 210',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: 'yes',
-            description: 'Logitech G Pro X',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/1.png',
-        },
-        {
-            name: 'Razer DeathAdder V2',
-            color: '12, 146, 47',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: false,
-            price: 69.99,
-            description: 'Razer DeathAdder V2',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/2.png',
-        },
-        {
-            name: 'Corsair Dark Core RGB',
-            color: '107, 187, 226',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: true,
-            price: 89.99,
-            description: 'Corsair Dark Core RGB',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/3.png',
-        },
-        {
-            name: 'SteelSeries Rival 3',
-            color: '228, 196, 69',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: false,
-            price: 29.99,
-            description: 'SteelSeries Rival 3',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/4.png',
-        },
-        {
-            name: 'HyperX Pulsefire FPS Pro',
-            color: '156, 82, 251',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: false,
-            price: 44.99,
-            description: 'HyperX Pulsefire FPS Pro',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/5.png',
-        },
-        {
-            name: 'Zowie EC2',
-            color: '166, 39, 222',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: false,
-            price: 69.99,
-            description: 'Zowie EC2',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/6.png',
-        },
-        {
-            name: 'Roccat Kone AIMO',
-            color: '131, 9, 10',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: false,
-            price: 79.99,
-            description: 'Roccat Kone AIMO',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/7.png',
-        },
-        {
-            name: 'Logitech G903',
-            color: '232, 94, 102',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: true,
-            price: 129.99,
-            description: 'Logitech G903',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/8.png',
-        },
-        {
-            name: 'Cooler Master MM711',
-            color: '58, 192, 239',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: false,
-            price: 49.99,
-            description: 'Cooler Master MM711',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/9.png',
-        },
-        {
-            name: 'Glorious Model O',
-            color: '161, 252, 250',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: false,
-            price: 49.99,
-            description: 'Glorious Model O',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/10.png',
-        },
-        {
-            name: 'HP Omen Photon',
-            color: '201, 1, 2',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: true,
-            price: 99.99,
-            description: 'HP Omen Photon',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/11.png',
-        },
-        {
-            name: 'Asus ROG Chakram',
-            color: '10, 181, 19',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: true,
-            price: 159.99,
-            description: 'Asus ROG Chakram',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/12.png',
-        },
-        {
-            name: 'Razer Naga X',
-            color: '100, 101, 102',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: false,
-            price: 79.99,
-            description: 'Razer Naga X',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/13.png',
-        },
-        {
-            name: 'Mad Catz R.A.T. 8+',
-            color: '136, 241, 242',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: false,
-            price: 99.99,
-            description: 'Mad Catz R.A.T. 8+',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/14.png',
-        },
-        {
-            name: 'Alienware 610M',
-            color: '109, 110, 114',
-            status: 'A급',
-            startPrice: 149.99,
-            currentPrice: 180.12,
-            wireless: true,
-            price: 99.99,
-            description: 'Alienware 610M',
-            src: 'https://cdn.vuetifyjs.com/docs/images/graphics/mice/15.png',
-        },
         ],
     }
     },
     methods: {
         detailProduct(id) {
+            console.log('id',id)
             this.$router.push({name: 'productDetail', query: {id:id}});
         },
         onClickSeeAll() {
@@ -312,73 +151,28 @@ export default {
 
         settingTitle() {
             const vm = this;
-            switch(vm.title_key) {
-                case 'mobile':
-                    vm.title = "모바일/태블릿"
-                    break;
-                case 'appliances':
-                    vm.title = "가전제품";
-                    break;
-                case 'electronics':
-                    vm.title = "전자제품";
-                    break;
-                case 'pc':
-                    vm.title = "노트북/PC";
-                    break;
-                case 'game':
-                    vm.title = "게임";
-                    break;
-                case 'book':
-                    vm.title = "도서/음반/문구";
-                    break;
-                case 'fashion':
-                    vm.title = "패션의류";
-                    break;
-                case 'beauty':
-                    vm.title = "뷰티";
-                    break;
-                case 'brandshop':
-                    vm.title = "수입명품";
-                    break;
-                case 'fashiongoods':
-                    vm.title = "패션잡화";
-                    break;
-                case 'infant':
-                    vm.title = "출산/유아동";
-                    break;
-                case 'camera':
-                    vm.title = "카메라/캠코더";
-                    break;
-                case 'interior':
-                    vm.title = "가구/인테리어";
-                    break;
-                case 'living':
-                    vm.title = "리빙/생활";
-                    break;
-                case 'pet':
-                    vm.title = "반려동물/취미";
-                    break;
-                case 'coupon':
-                    vm.title = "티켓/쿠폰";
-                    break;
-                case 'sports':
-                    vm.title = "스포츠";
-                    break;
-                case 'travel':
-                    vm.title = "레저/여행";
-                    break;
-                case 'car':
-                    vm.title = "중고차";
-                    break;
-                default:
-                    vm.title = "카테고리 없음";
-            }
+            vm.title = vm.$cookies.get('category');
+            axios({
+                method : 'post',
+                header: { 'Content-Type': 'application/json; charset=UTF-8' },
+                url: "/productcategory/getcategorygoods",
+                data: {idx: parseInt(vm.title_key)}
+            })
+            .then((response) => {
+                if(response.data != null) {
+                    vm.mice = response.data;
+                }
+            })
+            .catch(function(){
+                alert("에러가 발생하였습니다.")
+            });
         }
     },
     mounted() {
-        this.title_key = this.$route.params.key;
+        this.title_key = this.$cookies.get('category_idx');
         console.log('title key', this.title_key)
         this.settingTitle();
+
 
     }
 }

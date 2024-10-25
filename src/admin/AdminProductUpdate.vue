@@ -9,8 +9,8 @@
                 <v-list-item
                 lines="three"
                 prepend-avatar="https://randomuser.me/api/portraits/women/81.jpg"
-                subtitle="Logged in"
-                title="Jane Smith"
+                subtitle="환영합니다"
+                :title="`${name}님`"
                 ></v-list-item>
             </template>
 
@@ -23,7 +23,7 @@
             </v-list>
             <template v-slot:append>
                 <div class="pa-2">
-                    <v-btn color="primary" block>
+                    <v-btn color="primary" block @click="logout()">
                         Logout
                     </v-btn>
                 </div>
@@ -90,7 +90,7 @@
                 style="margin-right: 10px;"
                         color="red"
                         class="mt-4"
-                        @click="submitForm"
+                        @click="this.$router.push({name:'ProductRegiste'})"
                         >
                         취소하기
                     </v-btn>
@@ -113,6 +113,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 
 export default {
   name: "AdminProductUpdate",
@@ -121,6 +122,7 @@ export default {
   },
   data() {
     return {
+      name: sessionStorage.getItem('USER_ID'),
       valid: false,
       product: {
         name: '',
@@ -128,6 +130,9 @@ export default {
         manufacturer: '',
         price: null,
         description: '',
+        category: '',
+        idx: '',
+        image: ''
       },
       rules: {
         required: (value) => !!value || '필수 입력 항목입니다.',
@@ -137,15 +142,89 @@ export default {
     }
   },
   methods: {
+    // 로그아웃
+    logout() {
+      const vm = this;
+      axios({
+        method : 'post',
+        header: { 'Content-Type': 'application/json; charset=UTF-8' },
+        url: "/adminlogin/logout",
+      })
+        .then((response) => {
+          if(response.data) {
+            sessionStorage.removeItem('USER_ID');
+            sessionStorage.removeItem('JSESSIONID');
+            vm.$router.push({name:"AdminLogin"});
+          } else {
+            alert("데이터가 존재하지 않습니다.");
+          }
+        })
+        .catch((error) =>  {
+          console.log('error', error);
+          alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+        })
+    },
     submitForm() {
       if (this.$refs.form.validate()) {
+        
         // 폼 유효성 검증 성공 시 처리 로직
-        console.log('폼 데이터:', this.product);
-        alert('상품이 성공적으로 등록되었습니다.');
+        const formData = new FormData();
+        
+        // product의 속성들을 FormData에 추가
+        formData.append('name', this.product.name);
+        formData.append('title', this.product.title);
+        formData.append('manufacturer', this.product.manufacturer);
+        formData.append('price', this.product.price);
+        formData.append('description', this.product.description);
+        formData.append('category', this.product.category);
+        formData.append('idx', this.product.idx)
+        
+        // 이미지 파일 추가
+        formData.append('image', this.product.image);
+        axios({
+          method : 'post',
+          header: { 'Content-Type': 'multipart/form-data' },
+          url: "/adminproduct/update",
+          data: formData
+        })
+          .then((response) => {
+            if(response.data > 0) {
+              alert("상품이 성공적으로 수정되었습니다.")
+              this.$router.push({name: 'ProductRegiste'})
+              
+            } else {
+              alert("다시 작성해주세요");
+            }
+          })
+          .catch((error) =>  {
+            console.log('error', error);
+            alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+          })
       } else {
         console.log('폼 유효성 검증 실패');
       }
     },
+
+    initialize() {
+      axios({
+          method : 'post',
+          header: { 'Content-Type': 'application/json; charset=UTF-8' },
+          url: "/adminproduct/getonegoods",
+          data: {idx:this.product.idx}
+        })
+          .then((response) => {
+            if(response.data ) {
+              this.product = response.data;
+              console.log(this.product)
+            } else {
+              alert("데이터가 존재하지 않습니다.");
+            }
+          })
+          .catch((error) =>  {
+            console.log('error', error);
+            alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+          })
+    }
 
   },
 
@@ -153,7 +232,12 @@ export default {
 
   },
   mounted() {
-    
+    if(sessionStorage.getItem('USER_ID') == null && sessionStorage.getItem('JSESSIONID') == null) {
+      this.$router.push({name:'AdminLogin'});
+      return
+    }
+    this.product.idx = parseInt(this.$route.query.id);
+    this.initialize();
   },
 }
 </script>

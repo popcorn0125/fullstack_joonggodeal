@@ -21,7 +21,7 @@
         
         <template v-slot:append>
           <div class="pa-2">
-            <v-btn color="primary" block>Logout</v-btn>
+            <v-btn color="primary" block @click="logout()">Logout</v-btn>
           </div>
         </template>
       </v-navigation-drawer>
@@ -90,6 +90,28 @@ export default {
     }
   },
   methods: {
+    // 로그아웃
+    logout() {
+      const vm = this;
+      axios({
+        method : 'post',
+        header: { 'Content-Type': 'application/json; charset=UTF-8' },
+        url: "/adminlogin/logout",
+      })
+        .then((response) => {
+          if(response.data) {
+            sessionStorage.removeItem('USER_ID');
+            sessionStorage.removeItem('JSESSIONID');
+            vm.$router.push({name:"AdminLogin"});
+          } else {
+            alert("데이터가 존재하지 않습니다.");
+          }
+        })
+        .catch((error) =>  {
+          console.log('error', error);
+          alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+        })
+    },
     editNotice(notice) {
       this.$router.push({ name: 'AdminNoticeUpdate', query: { id: notice } });
     },
@@ -125,6 +147,10 @@ export default {
 
   },
   mounted() {
+    if(sessionStorage.getItem('USER_ID') == null && sessionStorage.getItem('JSESSIONID') == null) {
+      this.$router.push({name:'AdminLogin'});
+      return
+    }
     this.initialize();
   },
 }

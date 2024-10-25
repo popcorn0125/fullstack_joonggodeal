@@ -11,6 +11,10 @@ module.exports = defineConfig({
         target: 'http://localhost:8080',
         changeOrigin: true
       },
+      '/memberLogin': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      },
       '/adminpost': {
         target: 'http://localhost:8080',
         changeOrigin: true
@@ -24,6 +28,10 @@ module.exports = defineConfig({
         changeOrigin: true
       },
       '/adminnotice': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      },
+      '/productcategory': {
         target: 'http://localhost:8080',
         changeOrigin: true
       },

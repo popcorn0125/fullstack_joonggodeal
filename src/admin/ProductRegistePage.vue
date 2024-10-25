@@ -23,7 +23,7 @@
             </v-list>
             <template v-slot:append>
                 <div class="pa-2">
-                    <v-btn color="primary" block>
+                    <v-btn color="primary" block @click="logout()">
                         Logout
                     </v-btn>
                 </div>
@@ -153,6 +153,28 @@ export default {
     }
   },
   methods: {
+    // 로그아웃
+    logout() {
+      const vm = this;
+      axios({
+        method : 'post',
+        header: { 'Content-Type': 'application/json; charset=UTF-8' },
+        url: "/adminlogin/logout",
+      })
+        .then((response) => {
+          if(response.data) {
+            sessionStorage.removeItem('USER_ID');
+            sessionStorage.removeItem('JSESSIONID');
+            vm.$router.push({name:"AdminLogin"});
+          } else {
+            alert("데이터가 존재하지 않습니다.");
+          }
+        })
+        .catch((error) =>  {
+          console.log('error', error);
+          alert("예기치 못한 오류가 발생하였으니 잠시후 다시 시도해주세요.");
+        })
+    },
     submitForm() {
       if (this.$refs.form.validate()) {
         // 폼 유효성 검증 성공 시 처리 로직
@@ -166,6 +188,7 @@ export default {
         formData.append('price', this.product.price);
         formData.append('description', this.product.description);
         formData.append('category', this.product.category);
+        formData.append('id', this.name)
         
         // 이미지 파일 추가
         formData.append('image', this.product.image);
@@ -220,6 +243,10 @@ export default {
 
   },
   mounted() {
+    if(sessionStorage.getItem('USER_ID') == null && sessionStorage.getItem('JSESSIONID') == null) {
+      this.$router.push({name:'AdminLogin'});
+      return
+    }
     this.getCategory();
   },
 }
