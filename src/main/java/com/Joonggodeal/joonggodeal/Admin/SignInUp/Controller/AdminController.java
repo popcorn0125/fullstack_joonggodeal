@@ -28,11 +28,7 @@ public class AdminController {
     @Autowired
     AdminService adminService;
 
-    /*******************
-     * 날짜 : 2024.07.15
-     * 이름 : 김준식
-     * 내용 : 회원가입
-     * *****************/
+
     @PostMapping("/register")
     public ResponseEntity<HashMap<String, Object>> memberRegister(@RequestBody HashMap<String, String> params) {
         System.out.println("memberRegister 실행");
@@ -45,11 +41,7 @@ public class AdminController {
         return ResponseEntity.ok(adminService.memberRegister(adminDTO));
     }
 
-    /*******************
-     * 날짜 : 2024.07.16
-     * 이름 : 김준식
-     * 내용 : 아이디 중복 확인
-     * *****************/
+
     @PostMapping("/isDuplicateId")
     public ResponseEntity<Integer> isDuplcateId(@RequestBody HashMap<String, Object> params) {
         System.out.println("isDuplicateId 실행");
@@ -58,22 +50,12 @@ public class AdminController {
 
 
 
-    /*******************
-     * 날짜 : 2024.08.01
-     * 이름 : 김준식
-     * 내용 : 회원탈퇴
-     * *****************/
     @PostMapping("/deleteAccount")
     public ResponseEntity<Integer> deleteAccount(@RequestBody HashMap<String, Object> params) throws SQLException {
         System.out.println("deleteAccount 실행");
         return ResponseEntity.ok(adminService.deleteAccount(params));
     }
 
-    /*******************
-     * 날짜 : 2024.08.05
-     * 이름 : 권지용
-     * 내용 : 아이디 찾기
-     * *****************/
     @PostMapping("/findByID")
     public ResponseEntity<HashMap<String, Object>> findByID(@RequestBody HashMap<String, Object> params) {
         String userName = (String) params.get("userName");
@@ -91,11 +73,7 @@ public class AdminController {
         }
     }
 
-    /*******************
-     * 날짜 : 2024.08.05
-     * 이름 : 권지용
-     * 내용 : 비밀번호 찾기
-     * *****************/
+
     @PostMapping("/findByPW")
     public ResponseEntity<HashMap<String, Object>> findByPW(@RequestBody HashMap<String, Object> params) {
         String userID = (String) params.get("userID");
@@ -109,11 +87,7 @@ public class AdminController {
         return ResponseEntity.ok(response);
     }
 
-    /*******************
-     * 날짜 : 2024.08.05
-     * 이름 : 권지용
-     * 내용 : 비밀번호 재설정
-     * *****************/
+
     @PostMapping("/resetPassword")
     public ResponseEntity<String> resetPassword(@RequestBody Map<String, Object> params) {
         String userID = (String) params.get("userID");
@@ -127,11 +101,7 @@ public class AdminController {
         }
     }
 
-    /*******************
-     * 날짜 : 2024.10.25
-     * 이름 : 김준식
-     * 내용 : 모든 회원 정보 불러오기
-     * *****************/
+
     @PostMapping("/getusers")
     public ResponseEntity<List<HashMap<String, Object>>> getUsers() {
         System.out.println("AdminController 실행 - getUsers");

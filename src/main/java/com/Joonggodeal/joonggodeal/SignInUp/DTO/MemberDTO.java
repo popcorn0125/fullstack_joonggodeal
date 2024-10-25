@@ -1,10 +1,6 @@
 package com.Joonggodeal.joonggodeal.SignInUp.DTO;
 
-/*******************
- * 날짜 : 2024.07.15
- * 이름 : 김준식
- * 내용 : 사용자 DTO
- * *****************/
+
 public class MemberDTO {
     private String userid; // 아이디
     private String pw; // 비밀번호

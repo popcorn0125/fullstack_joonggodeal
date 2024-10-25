@@ -8,11 +8,7 @@
  -->
 <mapper namespace="com.Joonggodeal.joonggodeal.SignInUp.Dao.LoginDao">
 
-    <!--
-	작성일 : 2024.07.10
-	작성자 : 김준식
-	내용 : 사용자가 입력한 아이디 존재여부
-    -->
+
     <select id="userIdCheck" parameterType="String" resultType="int">
         SELECT COUNT(member_id)
         FROM joonggodeal.member
@@ -20,11 +16,7 @@
                 AND isdelete = 'N'
     </select>
 
-    <!--
-	작성일 : 2024.07.10
-	작성자 : 김준식
-	내용 : 비밀번호 가져오기
-    -->
+
     <select id="getUserPw" parameterType="HashMap" resultType="String">
         SELECT member_pw
         FROM joonggodeal.member
@@ -32,11 +24,7 @@
             AND isdelete = 'N'
     </select>
 
-    <!--
-	작성일 : 2024.07.28
-	작성자 : 김준식
-	내용 : 게스트 ID 저장
-    -->
+
     <insert id="guestLogin" parameterType="hashmap" >
         INSERT INTO joonggodeal.member (member_id, is_active)
         VALUES (#{guestId}, 'G')

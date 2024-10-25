@@ -13,11 +13,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.UUID;
 
-/*******************
- * 날짜 : 2024.07.10
- * 이름 : 김준식
- * 내용 : login Service
- * *****************/
 @Service
 public class LoginService {
 
@@ -27,18 +22,7 @@ public class LoginService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    // RSA 키 생성
-//    private final KeyPair keyPair;
-//
-//    public LoginService() throws NoSuchAlgorithmException {
-//        this.keyPair = KeyGeneratorUtils.generateRSAKeyPair();
-//    }
 
-    /*******************
-     * 날짜 : 2024.07.10
-     * 이름 : 김준식
-     * 내용 : 로그인(아이디, 비밀번호 검사)
-     * *****************/
     public HashMap<String, Object> smartLicenselogin(HashMap<String, Object> params, HttpServletRequest request, HttpServletResponse response) {
         // 0 : 로그인 실패, 1 : 로그인 성공
         HashMap<String, Object> result = new HashMap<>();
@@ -79,11 +63,6 @@ public class LoginService {
         return result;
     }
 
-    /*******************
-     * 날짜 : 2024.07.17
-     * 이름 : 김준식
-     * 내용 : 쿠키 생성
-     * *****************/
     public void cookieCreate(HttpServletResponse response, String cookieName, String cookieValue ) {
         Cookie cookie = new Cookie(cookieName, cookieValue);
         cookie.setMaxAge(24*60*60); // 쿠키 수명 24시간 (시간*분*초)
@@ -91,11 +70,6 @@ public class LoginService {
         response.addCookie(cookie);
     }
 
-    /*******************
-     * 날짜 : 2024.07.17
-     * 이름 : 김준식
-     * 내용 : 로그아웃
-     * *****************/
     public int logout(HttpServletRequest request) {
         int result = 0;
 
@@ -110,11 +84,6 @@ public class LoginService {
         return result;
     }
 
-    /*******************
-     * 날짜 : 2024.07.10
-     * 이름 : 김준식
-     * 내용 : 쿠키 삭제
-     * *****************/
     public void cookieDelete(HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();
         if(cookies != null) {
@@ -129,11 +98,6 @@ public class LoginService {
         }
     }
 
-    /*******************
-     * 날짜 : 2024.07.28
-     * 이름 : 김준식
-     * 내용 : 게스트 로그인(UUID를 생성하여 DB에 저장 후 front로 전달
-     * *****************/
     public HashMap<String, Object> guestLogin() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("result", 0);
@@ -151,11 +115,6 @@ public class LoginService {
         return result;
     }
 
-    /*******************
-     * 날짜 : 2024.07.29
-     * 이름 : 김준식
-     * 내용 : 사용자 비밀번호 일치 여부 확인
-     * *****************/
     public HashMap<String, Object> userPWCheck(HashMap<String, Object> params) throws SQLException {
         // 0 : 비밀번호 불일치, 1 : 비밀번호 일치
         HashMap<String, Object> result = new HashMap<>();
