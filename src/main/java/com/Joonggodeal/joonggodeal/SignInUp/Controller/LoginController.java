@@ -25,7 +25,7 @@ import java.util.HashMap;
 @RequiredArgsConstructor
 public class LoginController {
 
-    LoginService loginService;
+    private final LoginService loginService;
 
     /*******************
      * 날짜 : 2024.07.10

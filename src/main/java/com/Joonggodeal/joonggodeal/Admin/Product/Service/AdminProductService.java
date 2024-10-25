@@ -20,9 +20,12 @@ public class AdminProductService {
 //        adminProductDao.goodsRegister(params);
 //    }
 
-    public void goodsUpdate(HashMap<String, Object> params) throws SQLException {
-        adminProductDao.goodsUpdate(params);
-    }
+//    public void goodsUpdate(HashMap<String, Object> params) throws SQLException {
+//        adminProductDao.goodsUpdate(params);
+//    }
+    public void goodsUpdate(productDto productDto) {
+    adminProductDao.goodsUpdate(productDto);
+}
 
     public void goodsDelete(HashMap<String, Object> params) throws SQLException {
         adminProductDao.goodsDelete(params);
@@ -42,4 +45,7 @@ public class AdminProductService {
         adminProductDao.goodsRegister(productDto);
     }
 
+    public HashMap<String, Object> getOneGoods(HashMap<String, Object> params) {
+        return adminProductDao.getOneGoods(params);
+    }
 }

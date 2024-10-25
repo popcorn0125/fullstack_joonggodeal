@@ -8,8 +8,10 @@ import java.util.List;
 @Mapper
 public interface AdminProductDao {
     void goodsRegister(productDto productDto);
-    void goodsUpdate(HashMap<String, Object> params);
+    void goodsUpdate(productDto productDto);
     void goodsDelete(HashMap<String, Object> params);
+
+    HashMap<String, Object> getOneGoods(HashMap<String, Object> params);
     List<HashMap<String, Object>> getAllGoods(HashMap<String, Object> params);
     List<String> getCategory();
 

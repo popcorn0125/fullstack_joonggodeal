@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.Joonggodeal.joonggodeal.Product.DAO.ProductDao">
+
+    <select id="getCategory" resultType="HashMap">
+        select idx as key, category_name as title
+        from joonggodeal.category
+    </select>
+
+    <select id="getCategoryGoods" parameterType="HashMap" resultType="HashMap">
+        select idx, goods_title as title, goods_name as name, start_price as startprice, issoldout as sell,
+               bid_price as currentprice, file_name as src
+        from joonggodeal.goods
+        where category_idx = #{idx};
+    </select>
+
+    <select id="getOneGoods" parameterType="HashMap" resultType="HashMap">
+        select g.idx as idx, g.goods_name as name, g.goods_title as title, g.goods_company as company,
+               g.bid_price as currentprice, g.description as description, g.registe_date as create_date,
+               ca.category_name as category_name, g.file_name as filename, g.start_price as startprice
+        from joonggodeal.goods as g
+            join joonggodeal.category as ca on g.category_idx = ca.idx
+        where g.idx = #{idx}
+    </select>
+
+    <update id="submitBidPrice" parameterType="HashMap" >
+        UPDATE joonggodeal.goods
+        SET bid_price = #{bid_price},
+            buy_member = (select idx
+                          from joonggodeal.member
+                          where member_id = #{id})
+        WHERE idx = #{goods_idx};
+    </update>
+
+</mapper>

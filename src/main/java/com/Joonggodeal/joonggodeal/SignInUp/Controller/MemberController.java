@@ -14,11 +14,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-/*******************
- * 날짜 : 2024.07.15
- * 이름 : 김준식
- * 내용 : 회원 컨트롤러
- * *****************/
 
 @RestController
 @RequestMapping("/api")
@@ -27,11 +22,6 @@ public class MemberController {
     @Autowired
     MemberService memberService;
 
-    /*******************
-     * 날짜 : 2024.07.15
-     * 이름 : 김준식
-     * 내용 : 회원가입
-     * *****************/
     @PostMapping("/signup")
     public ResponseEntity<HashMap<String, Object>> memberRegister(@RequestBody HashMap<String, String> params) {
         System.out.println("memberRegister 실행");
@@ -39,84 +29,47 @@ public class MemberController {
                 params.get("userid"),
                 params.get("pw"),
                 params.get("name"),
-                params.get("phonenumber"),
-                params.get("nickname"),
-                params.get("gender").charAt(0)
+                params.get("nickname")
         );
         return ResponseEntity.ok(memberService.memberRegister(memberDTO));
     }
 
-    /*******************
-     * 날짜 : 2024.07.16
-     * 이름 : 김준식
-     * 내용 : 아이디 중복 확인
-     * *****************/
     @PostMapping("/isDuplicateId")
     public ResponseEntity<Integer> isDuplcateId(@RequestBody HashMap<String, Object> params) {
         System.out.println("isDuplicateId 실행");
         return ResponseEntity.ok(memberService.isDuplicateId(params));
     }
 
-    /*******************
-     * 날짜 : 2024.07.16
-     * 이름 : 김준식
-     * 내용 : 닉네임 중복 확인
-     * *****************/
     @PostMapping("/isDuplicateNickName")
     public ResponseEntity<Integer> isDuplicateNickName(@RequestBody HashMap<String, Object> params) {
         System.out.println("isDuplicateNickName 실행");
         return ResponseEntity.ok(memberService.isDuplicateNickName(params));
     }
 
-    /*******************
-     * 날짜 : 2024.07.29
-     * 이름 : 김준식
-     * 내용 : 마이페이지에서 회원 정보 불러오기
-     * *****************/
     @PostMapping("/loadUserInfo")
     public ResponseEntity<HashMap<String, Object>> loadUserInfo(@RequestBody HashMap<String, Object> params) throws SQLException {
         System.out.println("loadUserInfo 실행");
         return ResponseEntity.ok(memberService.loadUserInfo(params));
     }
 
-    /*******************
-     * 날짜 : 2024.08.01
-     * 이름 : 김준식
-     * 내용 : 정보수정에서 회원 정보 불러오기
-     * *****************/
     @PostMapping("/getUserInfo")
     public ResponseEntity<HashMap<String, Object>> getUserInfo(@RequestBody HashMap<String, Object> params) throws SQLException {
         System.out.println("getUserInfo 실행");
         return ResponseEntity.ok(memberService.getUserInfo(params));
     }
 
-    /*******************
-     * 날짜 : 2024.08.02
-     * 이름 : 김준식
-     * 내용 : 정보수정에서 회원정보 수정하기
-     * *****************/
     @PostMapping("/updateUserInfo")
     public ResponseEntity<Integer> updateUserInfo(@RequestBody HashMap<String, Object> params) throws SQLException {
         System.out.println("updateUserInfo 실행");
         return ResponseEntity.ok(memberService.updateUserInfo(params));
     }
 
-    /*******************
-     * 날짜 : 2024.08.01
-     * 이름 : 김준식
-     * 내용 : 회원탈퇴
-     * *****************/
     @PostMapping("/deleteAccount")
     public ResponseEntity<Integer> deleteAccount(@RequestBody HashMap<String, Object> params) throws SQLException {
         System.out.println("deleteAccount 실행");
         return ResponseEntity.ok(memberService.deleteAccount(params));
     }
 
-    /*******************
-     * 날짜 : 2024.08.05
-     * 이름 : 권지용
-     * 내용 : 아이디 찾기
-     * *****************/
     @PostMapping("/findByID")
     public ResponseEntity<HashMap<String, Object>> findByID(@RequestBody HashMap<String, Object> params) {
         String userName = (String) params.get("userName");
@@ -134,11 +87,6 @@ public class MemberController {
         }
     }
 
-    /*******************
-     * 날짜 : 2024.08.05
-     * 이름 : 권지용
-     * 내용 : 비밀번호 찾기
-     * *****************/
     @PostMapping("/findByPW")
     public ResponseEntity<HashMap<String, Object>> findByPW(@RequestBody HashMap<String, Object> params) {
         String userID = (String) params.get("userID");
@@ -152,11 +100,6 @@ public class MemberController {
         return ResponseEntity.ok(response);
     }
 
-    /*******************
-     * 날짜 : 2024.08.05
-     * 이름 : 권지용
-     * 내용 : 비밀번호 재설정
-     * *****************/
     @PostMapping("/resetPassword")
     public ResponseEntity<String> resetPassword(@RequestBody Map<String, Object> params) {
         String userID = (String) params.get("userID");

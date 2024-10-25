@@ -9,25 +9,13 @@ public class MemberDTO {
     private String userid; // 아이디
     private String pw; // 비밀번호
     private String name; // 이름
-    private String phonenumber; // 전화번호
     private String nickname; // 닉네임
-    private char gender; // 성별
 
-    public MemberDTO(String userid, String pw, String name, String phonenumber, String nickname, char gender) {
+    public MemberDTO(String userid, String pw, String name, String nickname) {
         this.userid = userid;
         this.pw = pw;
         this.name = name;
-        this.phonenumber = phonenumber;
         this.nickname = nickname;
-        this.gender = gender;
-    }
-
-    public String getPhonenumber() {
-        return phonenumber;
-    }
-
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
     }
 
     public String getUserid() {
@@ -64,11 +52,4 @@ public class MemberDTO {
         this.nickname = nickname;
     }
 
-    public char getGender() {
-        return gender;
-    }
-
-    public void setGender(char gender) {
-        this.gender = gender;
-    }
 }

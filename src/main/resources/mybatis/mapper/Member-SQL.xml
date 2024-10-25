@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--
+	작성일 : 2024.07.15
+	작성자 : 김준식
+	내용 : 화원가입 입니다.
+ -->
+<mapper namespace="com.Joonggodeal.joonggodeal.SignInUp.Dao.MemberDao">
+
+    <select id="isDuplicateId" parameterType="HashMap" resultType="int">
+        SELECT COUNT(member_id)
+        FROM joonggodeal.member
+        WHERE member_id = #{userid}
+    </select>
+
+
+    <select id="isDuplicateNickName" parameterType="HashMap" resultType="int">
+        SELECT COUNT(member_nickname)
+        FROM joonggodeal.member
+        WHERE member_nickname = #{nickname}
+    </select>
+
+
+    <insert id="memberRegister" parameterType="com.Joonggodeal.joonggodeal.SignInUp.DTO.MemberDTO" >
+        INSERT INTO joonggodeal.member( member_id, member_pw, member_name,  member_nickname)
+        VALUES (#{userid}, #{pw}, #{name}, #{nickname})
+    </insert>
+
+
+    <select id="loadUserInfo" parameterType="HashMap" resultType="HashMap">
+        SELECT m.member_name as member_name,
+               m.member_nickname as member_nickname,
+               COUNT(usa.user_select_answer_idx) as total_count,
+               COALESCE( SUM(usa.is_correct), 0) as correct_count
+        FROM joonggodeal.member m
+                 LEFT JOIN joonggodeal.user_select_answer usa ON m.member_id = usa.member_id
+                    AND usa.start_test_date IN
+                        (SELECT start_test_date
+                         FROM exam_record
+                         WHERE start_test_date LIKE CONCAT(#{current_date}, ' %'))
+        WHERE m.member_id = #{member_id}
+        GROUP BY m.member_id
+    </select>
+
+
+    <select id="getUserInfo" parameterType="HashMap" resultType="HashMap" >
+        SELECT member_id as id, member_name as name, member_nickname as nickname, create_date
+        FROM joonggodeal.member
+        WHERE member_id = #{id}
+                AND isdelete = 'N'
+    </select>
+
+    <update id="updateUserInfo" parameterType="HashMap" >
+        UPDATE joonggodeal.member
+
+        <set>
+            <if test='member_password != null and member_password != ""'>
+                member_password = #{member_password},
+            </if>
+            <if test='member_nickname != null and member_nickname != ""'>
+                member_nickname = #{member_nickname},
+            </if>
+            <if test='member_phone_number != null and member_phone_number != ""'>
+                member_phone_number = #{member_phone_number}
+            </if>
+
+        </set>
+        WHERE member_id = #{member_id}
+            AND member_name = #{member_name}
+            AND member_gender = #{member_gender}
+            AND is_active = '1'
+    </update>
+
+
+    <update id="deleteAccount" parameterType="HashMap" >
+        UPDATE joonggodeal.member
+        SET is_active = '0'
+        WHERE member_id = #{member_id}
+                AND member_name = #{member_name}
+                AND is_active = '1'
+    </update>
+
+    <select id="findByID" parameterType="map" resultType="String" >
+        SELECT member_id
+        FROM joonggodeal.member
+        WHERE member_name = #{userName}
+          AND member_phone_number = #{phonenumber}
+    </select>
+
+    <select id="findByPW" resultType="int" >
+        SELECT COUNT(*)
+        FROM joonggodeal.member
+        WHERE member_id = #{userID}
+          AND member_phone_number = #{phonenumber}
+    </select>
+
+    <update id="updatePassword" parameterType="map">
+        UPDATE joonggodeal.member
+        SET member_pw = #{newPassword}
+        WHERE member_id = #{userID}
+    </update>
+
+
+</mapper>
